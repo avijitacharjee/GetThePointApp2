@@ -16,11 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     BottomNavigationView bottomNavigationView;
+    WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        webView=findViewById(R.id.web_view);
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("https://www.google.com");
 
         //bottomNavigationview
         bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -66,6 +74,9 @@ public class MainActivity extends AppCompatActivity
                 }
                 return true;
             }
+
+
+
         });
     }
 
@@ -74,8 +85,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else if(webView.canGoBack()){
+            webView.goBack();
+        }
+        else {
+            open();
         }
     }
 
@@ -130,7 +144,7 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        finish();
+                        MainActivity.super.onBackPressed();
                     }
                 });
 
